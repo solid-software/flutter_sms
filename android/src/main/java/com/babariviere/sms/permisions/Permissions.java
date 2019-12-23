@@ -25,8 +25,7 @@ public class Permissions {
     }
 
     private boolean hasPermission(String permission) {
-        return (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                || activity.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+        return true;
     }
 
     private boolean hasPermissions(String[] permissions) {
