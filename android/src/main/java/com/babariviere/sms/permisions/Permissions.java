@@ -14,6 +14,9 @@ import java.util.Arrays;
 
 import static java.util.Collections.singleton;
 
+import io.flutter.plugin.common.PluginRegistry;
+
+
 /**
  * Created by babariviere on 08/03/18.
  */
@@ -29,6 +32,7 @@ public class Permissions{
     private final PermissionManager permissionManager;
     private final Activity activity;
     private final Context context;
+    boolean hasPermission;
 
     public Permissions(Activity activity, Context context) {
         this.activity = activity;
@@ -40,11 +44,15 @@ public class Permissions{
         permissionManager.checkPermissions(singleton(permission), new PermissionManager.PermissionRequestListener() {
             @Override
             public void onPermissionGranted() {
+                System.out.println(1);
+                hasPermission = true;
                 Toast.makeText(context, "Permissions Granted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPermissionDenied(DeniedPermissions deniedPermissions) {
+                System.out.println(2);
+                hasPermission = false;
                 String deniedPermissionsText = "Denied: " + Arrays.toString(deniedPermissions.toArray());
                 Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
 
@@ -55,9 +63,9 @@ public class Permissions{
                 }
             }
         });
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
+        System.out.println(3);
+        return hasPermission;
     }
-
     private boolean hasPermissions(String[] permissions) {
         for (String perm : permissions) {
             if (!hasPermission(perm)) {

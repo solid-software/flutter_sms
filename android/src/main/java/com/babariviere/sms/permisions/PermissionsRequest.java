@@ -4,11 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 
-import com.newtronlabs.easypermissions.EasyPermissions;
-import com.newtronlabs.easypermissions.listeners.IPermissionsListener;
-
-import java.util.Set;
-
 /**
  * Created by Joan Pablo on 4/17/2018.
  */
