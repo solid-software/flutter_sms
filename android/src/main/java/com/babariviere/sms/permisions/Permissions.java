@@ -4,13 +4,18 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.newtronlabs.easypermissions.EasyPermissions;
+import com.newtronlabs.easypermissions.listeners.IPermissionsListener;
+
+import java.util.Set;
+
 import io.flutter.plugin.common.PluginRegistry;
 
 /**
  * Created by babariviere on 08/03/18.
  */
 
-public class Permissions {
+public class Permissions{
     public static final int RECV_SMS_ID_REQ = 1;
     public static final int SEND_SMS_ID_REQ = 2;
     public static final int READ_SMS_ID_REQ = 3;
@@ -43,7 +48,6 @@ public class Permissions {
     }
 
     public boolean checkAndRequestPermission(String[] permissions, int id) {
-        System.out.println("REMOVE CHECKING PERMISSION");
         return true;
     }
 }
