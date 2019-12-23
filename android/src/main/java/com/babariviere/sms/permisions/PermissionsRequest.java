@@ -25,6 +25,6 @@ class PermissionsRequest {
 
     @TargetApi(Build.VERSION_CODES.M)
     void execute() {
-        this.activity.requestPermissions(this.permissions, this.id);
+        System.out.println("CHECK PERMISSION");
     }
 }
