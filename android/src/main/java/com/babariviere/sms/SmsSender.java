@@ -117,7 +117,7 @@ class SmsSender implements MethodCallHandler {
 
     SmsSender(Registrar registrar) {
         this.registrar = registrar;
-        permissions = new Permissions(registrar.activity());
+        permissions = new Permissions(registrar.activity(),registrar.context());
     }
 
     @Override

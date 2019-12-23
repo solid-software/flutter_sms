@@ -5,7 +5,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url "http://code.newtronlabs.com:8081/artifactory/libs-release-local" }
     }
 
     dependencies {
@@ -20,15 +19,9 @@ rootProject.allprojects {
         maven {
             url "https://maven.google.com"
         }
-        maven{
-            url "http://code.newtronlabs.com:8081/artifactory/libs-release-local"
-        }
     }
 }
 
-subprojects {
-    apply plugin: 'com.newtronlabs.android'
-}
 
 apply plugin: 'com.android.library'
 
@@ -44,6 +37,7 @@ android {
     }
 
     dependencies {
-        compileOnly 'com.newtronlabs.easypermissions:easypermissions:4.0.0'
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        implementation 'com.intentfilter:android-permissions:1.0.43'
     }
 }

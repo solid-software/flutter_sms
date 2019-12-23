@@ -153,7 +153,7 @@ class SmsQuery implements MethodCallHandler {
 
   SmsQuery(PluginRegistry.Registrar registrar) {
     this.registrar = registrar;
-    this.permissions = new Permissions(registrar.activity());
+    this.permissions = new Permissions(registrar.activity(),registrar.context());
   }
 
   @Override

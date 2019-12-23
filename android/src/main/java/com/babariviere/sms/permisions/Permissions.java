@@ -1,15 +1,18 @@
 package com.babariviere.sms.permisions;
 
 import android.app.Activity;
-import android.content.pm.PackageManager;
+import android.content.Context;
 import android.os.Build;
+import android.widget.Toast;
 
-import com.newtronlabs.easypermissions.EasyPermissions;
-import com.newtronlabs.easypermissions.listeners.IPermissionsListener;
+import com.intentfilter.androidpermissions.PermissionManager;
+import com.intentfilter.androidpermissions.models.DeniedPermission;
+import com.intentfilter.androidpermissions.models.DeniedPermissions;
 
-import java.util.Set;
+import java.util.Arrays;
 
-import io.flutter.plugin.common.PluginRegistry;
+
+import static java.util.Collections.singleton;
 
 /**
  * Created by babariviere on 08/03/18.
@@ -23,15 +26,36 @@ public class Permissions{
     public static final int BROADCAST_SMS = 5;
     public static final int READ_PHONE_STATE = 6;
     private static final PermissionsRequestHandler requestsListener = new PermissionsRequestHandler();
+    private final PermissionManager permissionManager;
     private final Activity activity;
+    private final Context context;
 
-    public Permissions(Activity activity) {
+    public Permissions(Activity activity, Context context) {
         this.activity = activity;
+        this.context = context;
+        permissionManager = PermissionManager.getInstance(context);
     }
 
     private boolean hasPermission(String permission) {
-        System.out.println("return true");
-        return true;
+        permissionManager.checkPermissions(singleton(permission), new PermissionManager.PermissionRequestListener() {
+            @Override
+            public void onPermissionGranted() {
+                Toast.makeText(context, "Permissions Granted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPermissionDenied(DeniedPermissions deniedPermissions) {
+                String deniedPermissionsText = "Denied: " + Arrays.toString(deniedPermissions.toArray());
+                Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
+
+                for (DeniedPermission deniedPermission : deniedPermissions) {
+                    if(deniedPermission.shouldShowRationale()) {
+                        // Display a rationale about why this permission is required
+                    }
+                }
+            }
+        });
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
     }
 
     private boolean hasPermissions(String[] permissions) {
@@ -48,6 +72,15 @@ public class Permissions{
     }
 
     public boolean checkAndRequestPermission(String[] permissions, int id) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (!hasPermissions(permissions)) {
+            PermissionsRequestHandler.requestPermissions(
+                    new PermissionsRequest(id, permissions, activity)
+            );
+            return false;
+        }
         return true;
     }
 }

@@ -38,7 +38,7 @@ class SmsReceiver implements StreamHandler, RequestPermissionsResultListener {
 
   SmsReceiver(Registrar registrar) {
     this.registrar = registrar;
-    this.permissions = new Permissions(registrar.activity());
+    this.permissions = new Permissions(registrar.activity(),registrar.context());
     registrar.addRequestPermissionsResultListener(this);
   }
 

@@ -82,7 +82,7 @@ class SimCardsProvider implements MethodChannel.MethodCallHandler {
 
     SimCardsProvider(PluginRegistry.Registrar registrar) {
         this.registrar = registrar;
-        permissions = new Permissions(registrar.activity());
+        permissions = new Permissions(registrar.activity(),registrar.context());
     }
 
     @Override
