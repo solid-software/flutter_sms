@@ -21,7 +21,7 @@ import io.flutter.plugin.common.PluginRegistry;
  * Created by babariviere on 08/03/18.
  */
 
-public class Permissions{
+public class Permissions {
     public static final int RECV_SMS_ID_REQ = 1;
     public static final int SEND_SMS_ID_REQ = 2;
     public static final int READ_SMS_ID_REQ = 3;
@@ -57,15 +57,17 @@ public class Permissions{
                 Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
 
                 for (DeniedPermission deniedPermission : deniedPermissions) {
-                    if(deniedPermission.shouldShowRationale()) {
+                    if (deniedPermission.shouldShowRationale()) {
                         // Display a rationale about why this permission is required
                     }
                 }
             }
         });
         System.out.println(3);
+        System.out.println(hasPermission);
         return hasPermission;
     }
+
     private boolean hasPermissions(String[] permissions) {
         for (String perm : permissions) {
             if (!hasPermission(perm)) {
@@ -83,12 +85,8 @@ public class Permissions{
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (!hasPermissions(permissions)) {
-            PermissionsRequestHandler.requestPermissions(
-                    new PermissionsRequest(id, permissions, activity)
-            );
-            return false;
-        }
-        return true;
+        System.out.println("this is permission");
+        System.out.println(hasPermissions(permissions));
+        return hasPermissions(permissions);
     }
 }
