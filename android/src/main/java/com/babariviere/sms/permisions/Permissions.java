@@ -43,15 +43,6 @@ public class Permissions {
     }
 
     public boolean checkAndRequestPermission(String[] permissions, int id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (!hasPermissions(permissions)) {
-            PermissionsRequestHandler.requestPermissions(
-                    new PermissionsRequest(id, permissions, activity)
-            );
-            return false;
-        }
-        return true;
+        System.out.println("REMOVE CHECKING PERMISSION");
     }
 }
