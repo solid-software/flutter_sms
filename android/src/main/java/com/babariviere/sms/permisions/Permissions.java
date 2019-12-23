@@ -25,6 +25,7 @@ public class Permissions {
     }
 
     private boolean hasPermission(String permission) {
+        System.out.println("return true");
         return true;
     }
 
