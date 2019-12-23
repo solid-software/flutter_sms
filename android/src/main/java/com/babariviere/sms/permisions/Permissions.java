@@ -44,5 +44,6 @@ public class Permissions {
 
     public boolean checkAndRequestPermission(String[] permissions, int id) {
         System.out.println("REMOVE CHECKING PERMISSION");
+        return true;
     }
 }
