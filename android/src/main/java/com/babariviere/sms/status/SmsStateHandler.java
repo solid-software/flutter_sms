@@ -26,7 +26,7 @@ public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegist
 
     public SmsStateHandler(PluginRegistry.Registrar registrar) {
         this.registrar = registrar;
-        this.permissions = new Permissions(registrar.activity(), registrar.context());
+        this.permissions = new Permissions(registrar.context());
         registrar.addRequestPermissionsResultListener(this);
     }
 

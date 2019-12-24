@@ -147,7 +147,7 @@ class UserProfileProvider implements MethodChannel.MethodCallHandler {
 
     UserProfileProvider(PluginRegistry.Registrar registrar) {
         this.registrar = registrar;
-        permissions = new Permissions(registrar.activity(), registrar.context());
+        permissions = new Permissions(registrar.context());
     }
 
     @Override
