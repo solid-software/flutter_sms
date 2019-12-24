@@ -25,23 +25,23 @@ public class CustomPermissionsManager {
         permissionManager.getResultCode();
     }
 
-    void checkAndRequestPermission(final String permission,final PermissionHandler pemissionHandler){
-        if (requestedPermissions.contains(permission)) {
+    void checkAndRequestPermission(final List<String> permissions,final PermissionHandler permissionHandler){
+        if (requestedPermissions.contains(permissions)) {
             return;
         }
-        requestedPermissions.add(permission);
+        requestedPermissions.addAll(permissions);
 
-        permissionManager.checkPermissions(singleton(permission), new PermissionManager.PermissionRequestListener() {
+        permissionManager.checkPermissions(permissions, new PermissionManager.PermissionRequestListener() {
             @Override
             public void onPermissionGranted() {
-                requestedPermissions.remove(permission);
-                pemissionHandler.callback();
+                requestedPermissions.removeAll(permissions);
+                permissionHandler.callback();
                 Toast.makeText(context, "Permissions Granted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPermissionDenied(DeniedPermissions deniedPermissions) {
-                requestedPermissions.remove(permission);
+                requestedPermissions.removeAll(permissions);
                 String deniedPermissionsText = "Denied: " + Arrays.toString(deniedPermissions.toArray());
                 Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
 

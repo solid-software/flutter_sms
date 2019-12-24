@@ -24,26 +24,17 @@ public class Permissions {
     public static final int READ_PHONE_STATE = 6;
     private static final PermissionsRequestHandler requestsListener = new PermissionsRequestHandler();
     private final CustomPermissionsManager customPermissionsManager;
+
     public Permissions(Context context) {
         customPermissionsManager = new CustomPermissionsManager(context);
-    }
-
-    private void hasPermission(final String permission, PermissionHandler permissionHandler) {
-        customPermissionsManager.checkAndRequestPermission(permission,permissionHandler);
-    }
-
-    private void hasPermissions(String[] permissions, PermissionHandler permissionHandler) {
-        for (String perm : permissions) {
-            hasPermission(perm,permissionHandler);
-        }
     }
 
     public static PluginRegistry.RequestPermissionsResultListener getRequestsResultsListener() {
         return requestsListener;
     }
 
-    public void checkAndRequestPermission(String[] permissions, int id, PermissionHandler pemissionHandler) {
+    public void checkAndRequestPermission(String[] permissions, int id, PermissionHandler permissionHandler) {
         final List<String> list = Arrays.asList(permissions);
-        hasPermissions(permissions,pemissionHandler);
+        customPermissionsManager.checkAndRequestPermission(list, permissionHandler);
     }
 }
