@@ -26,7 +26,7 @@ public class CustomPermissionsManager {
     }
 
     void checkAndRequestPermission(final List<String> permissions,final PermissionHandler permissionHandler){
-        if (requestedPermissions.contains(permissions)) {
+        if(requestedPermissions.containsAll(permissions)){
             return;
         }
         requestedPermissions.addAll(permissions);
