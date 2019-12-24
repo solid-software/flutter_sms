@@ -36,15 +36,12 @@ public class CustomPermissionsManager {
             public void onPermissionGranted() {
                 requestedPermissions.removeAll(permissions);
                 permissionHandler.callback();
-                Toast.makeText(context, "Permissions Granted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPermissionDenied(DeniedPermissions deniedPermissions) {
                 requestedPermissions.removeAll(permissions);
                 String deniedPermissionsText = "Denied: " + Arrays.toString(deniedPermissions.toArray());
-                Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
-
                 for (DeniedPermission deniedPermission : deniedPermissions) {
                     if (deniedPermission.shouldShowRationale()) {
                         // Display a rationale about why this permission is required
