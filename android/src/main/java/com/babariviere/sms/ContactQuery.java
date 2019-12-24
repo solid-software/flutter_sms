@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import org.json.JSONException;
@@ -24,7 +25,7 @@ import static io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultLi
  * Created by babariviere on 10/03/18.
  */
 
-class ContactQueryHandler implements RequestPermissionsResultListener {
+class ContactQueryHandler implements RequestPermissionsResultListener, PermissionHandler {
     private final String[] permissionsList = new String[]{Manifest.permission.READ_CONTACTS};
     private PluginRegistry.Registrar registrar;
     private MethodChannel.Result result;
@@ -37,9 +38,7 @@ class ContactQueryHandler implements RequestPermissionsResultListener {
     }
 
     void handle(Permissions permissions) {
-        if (permissions.checkAndRequestPermission(permissionsList, Permissions.READ_CONTACT_ID_REQ)) {
-            queryContact();
-        }
+        permissions.checkAndRequestPermission(permissionsList, Permissions.READ_CONTACT_ID_REQ, this);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -87,6 +86,11 @@ class ContactQueryHandler implements RequestPermissionsResultListener {
         result.error("#01", "permission denied", null);
         return false;
     }
+
+    @Override
+    public void callback() {
+        queryContact();
+    }
 }
 
 class ContactQuery implements MethodCallHandler {
@@ -95,7 +99,7 @@ class ContactQuery implements MethodCallHandler {
 
     ContactQuery(PluginRegistry.Registrar registrar) {
         this.registrar = registrar;
-        permissions = new Permissions(registrar.activity(),registrar.context());
+        permissions = new Permissions(registrar.activity(), registrar.context());
     }
 
     @Override

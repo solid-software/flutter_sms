@@ -11,6 +11,7 @@ import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import org.json.JSONException;
@@ -30,7 +31,7 @@ import static io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultLi
  */
 
 @TargetApi(Build.VERSION_CODES.DONUT)
-class SmsSenderMethodHandler implements RequestPermissionsResultListener {
+class SmsSenderMethodHandler implements RequestPermissionsResultListener, PermissionHandler {
     private static final SmsManager sms = SmsManager.getDefault();
     private final String[] permissionsList = new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE};
     private MethodChannel.Result result;
@@ -50,9 +51,7 @@ class SmsSenderMethodHandler implements RequestPermissionsResultListener {
     }
 
     void handle(Permissions permissions) {
-        if (permissions.checkAndRequestPermission(permissionsList, Permissions.SEND_SMS_ID_REQ)) {
-            sendSmsMessage();
-        }
+        permissions.checkAndRequestPermission(permissionsList, Permissions.SEND_SMS_ID_REQ,this);
     }
 
     @Override
@@ -107,6 +106,11 @@ class SmsSenderMethodHandler implements RequestPermissionsResultListener {
         }
         sms.sendTextMessage(address, null, body, sentPendingIntent, deliveredPendingIntent);
         result.success(null);
+    }
+
+    @Override
+    public void callback() {
+        sendSmsMessage();
     }
 }
 

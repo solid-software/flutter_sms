@@ -15,35 +15,33 @@ import static java.util.Collections.singleton;
 
 public class CustomPermissionsManager {
     private final Context context;
-    private List<String> requestedPermissions = new ArrayList();
-    private boolean hasPermission;
+    private List<String> requestedPermissions = new ArrayList<>();
     private final PermissionManager permissionManager;
 
 
     CustomPermissionsManager(Context context){
         this.context = context;
         permissionManager = PermissionManager.getInstance(context);
+        permissionManager.getResultCode();
     }
 
-    boolean checkAndRequestPermission(final String permission){
-        hasPermission = false;
-        if (requestedPermissions.contains(permission)) return false;
-
-        System.out.println("more and more");
+    void checkAndRequestPermission(final String permission,final PermissionHandler pemissionHandler){
+        if (requestedPermissions.contains(permission)) {
+            return;
+        }
         requestedPermissions.add(permission);
 
         permissionManager.checkPermissions(singleton(permission), new PermissionManager.PermissionRequestListener() {
             @Override
             public void onPermissionGranted() {
                 requestedPermissions.remove(permission);
-                hasPermission = true;
+                pemissionHandler.callback();
                 Toast.makeText(context, "Permissions Granted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPermissionDenied(DeniedPermissions deniedPermissions) {
                 requestedPermissions.remove(permission);
-                hasPermission = false;
                 String deniedPermissionsText = "Denied: " + Arrays.toString(deniedPermissions.toArray());
                 Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
 
@@ -54,6 +52,5 @@ public class CustomPermissionsManager {
                 }
             }
         });
-        return hasPermission;
     }
 }

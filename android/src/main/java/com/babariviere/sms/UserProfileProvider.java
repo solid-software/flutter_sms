@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import org.json.JSONArray;
@@ -23,7 +24,7 @@ import io.flutter.plugin.common.PluginRegistry;
  * Created by Joan Pablo on 4/11/2018.
  */
 
-class UserProfileHandler implements PluginRegistry.RequestPermissionsResultListener {
+class UserProfileHandler implements PluginRegistry.RequestPermissionsResultListener, PermissionHandler {
     private final String[] permissionsList = new String[]{Manifest.permission.READ_CONTACTS};
     private PluginRegistry.Registrar registrar;
     private MethodChannel.Result result;
@@ -34,9 +35,7 @@ class UserProfileHandler implements PluginRegistry.RequestPermissionsResultListe
     }
 
     void handle(Permissions permissions) {
-        if (permissions.checkAndRequestPermission(permissionsList, Permissions.READ_CONTACT_ID_REQ)) {
-            queryUserProfile();
-        }
+        permissions.checkAndRequestPermission(permissionsList, Permissions.READ_CONTACT_ID_REQ, this);
     }
 
     private void queryUserProfile() {
@@ -135,6 +134,11 @@ class UserProfileHandler implements PluginRegistry.RequestPermissionsResultListe
         result.error("#01", "permission denied", null);
         return false;
     }
+
+    @Override
+    public void callback() {
+        queryUserProfile();
+    }
 }
 
 class UserProfileProvider implements MethodChannel.MethodCallHandler {
@@ -143,7 +147,7 @@ class UserProfileProvider implements MethodChannel.MethodCallHandler {
 
     UserProfileProvider(PluginRegistry.Registrar registrar) {
         this.registrar = registrar;
-        permissions = new Permissions(registrar.activity(),registrar.context());
+        permissions = new Permissions(registrar.activity(), registrar.context());
     }
 
     @Override

@@ -3,18 +3,7 @@ package com.babariviere.sms.permisions;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.widget.Toast;
 
-import com.intentfilter.androidpermissions.PermissionManager;
-import com.intentfilter.androidpermissions.models.DeniedPermission;
-import com.intentfilter.androidpermissions.models.DeniedPermissions;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-
-import static java.util.Collections.singleton;
 
 import io.flutter.plugin.common.PluginRegistry;
 
@@ -31,36 +20,26 @@ public class Permissions {
     public static final int BROADCAST_SMS = 5;
     public static final int READ_PHONE_STATE = 6;
     private static final PermissionsRequestHandler requestsListener = new PermissionsRequestHandler();
-    private final Activity activity;
-    private final Context context;
     private final CustomPermissionsManager customPermissionsManager;
-    public Permissions(Activity activity, Context context) {
-        this.activity = activity;
-        this.context = context;
+    public Permissions(Context context) {
         customPermissionsManager = new CustomPermissionsManager(context);
     }
 
-    private boolean hasPermission(final String permission) {
-       return customPermissionsManager.checkAndRequestPermission(permission);
+    private void hasPermission(final String permission, PermissionHandler permissionHandler) {
+        customPermissionsManager.checkAndRequestPermission(permission,permissionHandler);
     }
 
-    private boolean hasPermissions(String[] permissions) {
+    private void hasPermissions(String[] permissions, PermissionHandler permissionHandler) {
         for (String perm : permissions) {
-            if (!hasPermission(perm)) {
-                return false;
-            }
+            hasPermission(perm,permissionHandler);
         }
-        return true;
     }
 
     public static PluginRegistry.RequestPermissionsResultListener getRequestsResultsListener() {
         return requestsListener;
     }
 
-    public boolean checkAndRequestPermission(String[] permissions, int id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        return hasPermissions(permissions);
+    public void checkAndRequestPermission(String[] permissions, int id, PermissionHandler pemissionHandler) {
+        hasPermissions(permissions,pemissionHandler);
     }
 }

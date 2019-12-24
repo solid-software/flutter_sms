@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import io.flutter.plugin.common.EventChannel;
@@ -16,7 +17,7 @@ import io.flutter.plugin.common.PluginRegistry;
  * Created by Joan Pablo on 4/17/2018.
  */
 
-public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegistry.RequestPermissionsResultListener {
+public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegistry.RequestPermissionsResultListener, PermissionHandler {
 
     private BroadcastReceiver smsStateChangeReceiver;
     final private PluginRegistry.Registrar registrar;
@@ -25,7 +26,7 @@ public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegist
 
     public SmsStateHandler(PluginRegistry.Registrar registrar) {
         this.registrar = registrar;
-        this.permissions = new Permissions(registrar.activity(),registrar.context());
+        this.permissions = new Permissions(registrar.activity(), registrar.context());
         registrar.addRequestPermissionsResultListener(this);
     }
 
@@ -33,12 +34,9 @@ public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegist
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         smsStateChangeReceiver = new SmsStateChangeReceiver(eventSink);
-        if(permissions.checkAndRequestPermission(
+        permissions.checkAndRequestPermission(
                 new String[]{Manifest.permission.RECEIVE_SMS},
-                Permissions.BROADCAST_SMS)){
-            registerDeliveredReceiver();
-            registerSentReceiver();
-        }
+                Permissions.BROADCAST_SMS, this);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -68,7 +66,7 @@ public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegist
             return false;
         }
         boolean isOk = true;
-        for (int res: grantResults) {
+        for (int res : grantResults) {
             if (res != PackageManager.PERMISSION_GRANTED) {
                 isOk = false;
                 break;
@@ -82,5 +80,11 @@ public class SmsStateHandler implements EventChannel.StreamHandler, PluginRegist
         eventSink.error("#01", "permission denied", null);
 
         return false;
+    }
+
+    @Override
+    public void callback() {
+        registerDeliveredReceiver();
+        registerSentReceiver();
     }
 }

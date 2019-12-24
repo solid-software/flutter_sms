@@ -13,6 +13,7 @@ import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ import static io.flutter.plugin.common.PluginRegistry.Registrar;
  * Created by babariviere on 08/03/18.
  */
 
-class SmsReceiver implements StreamHandler, RequestPermissionsResultListener {
+class SmsReceiver implements StreamHandler, RequestPermissionsResultListener, PermissionHandler {
   private final Registrar registrar;
   private BroadcastReceiver receiver;
   private final Permissions permissions;
@@ -48,7 +49,7 @@ class SmsReceiver implements StreamHandler, RequestPermissionsResultListener {
     receiver = createSmsReceiver(events);
     registrar.context().registerReceiver(receiver, new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
     sink = events;
-    permissions.checkAndRequestPermission(permissionsList, Permissions.RECV_SMS_ID_REQ);
+    permissions.checkAndRequestPermission(permissionsList, Permissions.RECV_SMS_ID_REQ,this);
   }
 
   @Override
@@ -112,5 +113,10 @@ class SmsReceiver implements StreamHandler, RequestPermissionsResultListener {
     }
     sink.endOfStream();
     return false;
+  }
+
+  @Override
+  public void callback() {
+
   }
 }

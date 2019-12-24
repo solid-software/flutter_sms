@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 import com.babariviere.sms.telephony.TelephonyManager;
 
@@ -17,7 +18,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
-class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener {
+class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener, PermissionHandler {
     private final String[] permissionsList = new String[]{Manifest.permission.READ_PHONE_STATE};
     private PluginRegistry.Registrar registrar;
     private MethodChannel.Result result;
@@ -48,9 +49,7 @@ class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener
     }
 
     void handle(Permissions permissions) {
-        if (permissions.checkAndRequestPermission(permissionsList, Permissions.READ_PHONE_STATE)) {
-            getSimCards();
-        }
+        permissions.checkAndRequestPermission(permissionsList, Permissions.READ_PHONE_STATE,this);
     }
 
     private void getSimCards() {
@@ -73,6 +72,11 @@ class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener
         }
 
         result.success(simCards);
+    }
+
+    @Override
+    public void callback() {
+        getSimCards();
     }
 }
 

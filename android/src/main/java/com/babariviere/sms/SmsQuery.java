@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import org.json.JSONException;
@@ -41,7 +42,7 @@ enum SmsQueryRequest {
   }
 }
 
-class SmsQueryHandler implements RequestPermissionsResultListener {
+class SmsQueryHandler implements RequestPermissionsResultListener, PermissionHandler {
   private final PluginRegistry.Registrar registrar;
   private final String[] permissionsList = new String[]{Manifest.permission.READ_SMS};
   private MethodChannel.Result result;
@@ -63,9 +64,7 @@ class SmsQueryHandler implements RequestPermissionsResultListener {
   }
 
   void handle(Permissions permissions) {
-    if (permissions.checkAndRequestPermission(permissionsList, Permissions.SEND_SMS_ID_REQ)) {
-      querySms();
-    }
+    permissions.checkAndRequestPermission(permissionsList, Permissions.SEND_SMS_ID_REQ,this);
   }
 
   private JSONObject readSms(Cursor cursor) {
@@ -143,6 +142,11 @@ class SmsQueryHandler implements RequestPermissionsResultListener {
     }
     result.error("#01", "permission denied", null);
     return false;
+  }
+
+  @Override
+  public void callback() {
+    querySms();
   }
 }
 

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 
+import com.babariviere.sms.permisions.PermissionHandler;
 import com.babariviere.sms.permisions.Permissions;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ import static io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultLi
  * Created by joanpablo on 18/03/18.
  */
 
-class ContactPhotoQueryHandler implements RequestPermissionsResultListener {
+class ContactPhotoQueryHandler implements RequestPermissionsResultListener, PermissionHandler {
   private final PluginRegistry.Registrar registrar;
   private final String[] permissionsList = new String[]{Manifest.permission.READ_CONTACTS};
   private MethodChannel.Result result;
@@ -42,13 +43,7 @@ class ContactPhotoQueryHandler implements RequestPermissionsResultListener {
   }
 
   void handle(Permissions permissions) {
-    if (permissions.checkAndRequestPermission(permissionsList, Permissions.READ_CONTACT_ID_REQ)) {
-      if (fullSize) {
-        queryContactPhoto();
-      } else {
-        queryContactThumbnail();
-      }
-    }
+    permissions.checkAndRequestPermission(permissionsList, Permissions.READ_CONTACT_ID_REQ,this);
   }
 
   @TargetApi(Build.VERSION_CODES.ECLAIR)
@@ -113,6 +108,15 @@ class ContactPhotoQueryHandler implements RequestPermissionsResultListener {
     }
     result.error("#01", "permission denied", null);
     return false;
+  }
+
+  @Override
+  public void callback() {
+    if (fullSize) {
+      queryContactPhoto();
+    } else {
+      queryContactThumbnail();
+    }
   }
 }
 
