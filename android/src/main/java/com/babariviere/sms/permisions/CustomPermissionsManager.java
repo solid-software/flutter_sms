@@ -14,19 +14,17 @@ import java.util.List;
 import static java.util.Collections.singleton;
 
 public class CustomPermissionsManager {
-    private final Context context;
     private List<String> requestedPermissions = new ArrayList<>();
     private final PermissionManager permissionManager;
 
 
     CustomPermissionsManager(Context context){
-        this.context = context;
         permissionManager = PermissionManager.getInstance(context);
-        permissionManager.getResultCode();
     }
 
     void checkAndRequestPermission(final List<String> permissions,final PermissionHandler permissionHandler){
         if(requestedPermissions.containsAll(permissions)){
+            System.out.println("Wait for accepting");
             return;
         }
         requestedPermissions.addAll(permissions);
