@@ -9,7 +9,9 @@ import com.intentfilter.androidpermissions.PermissionManager;
 import com.intentfilter.androidpermissions.models.DeniedPermission;
 import com.intentfilter.androidpermissions.models.DeniedPermissions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 import static java.util.Collections.singleton;
@@ -29,43 +31,17 @@ public class Permissions {
     public static final int BROADCAST_SMS = 5;
     public static final int READ_PHONE_STATE = 6;
     private static final PermissionsRequestHandler requestsListener = new PermissionsRequestHandler();
-    private final PermissionManager permissionManager;
     private final Activity activity;
     private final Context context;
-    boolean hasPermission;
-
+    private final CustomPermissionsManager customPermissionsManager;
     public Permissions(Activity activity, Context context) {
         this.activity = activity;
         this.context = context;
-        permissionManager = PermissionManager.getInstance(context);
+        customPermissionsManager = new CustomPermissionsManager(context);
     }
 
-    private boolean hasPermission(String permission) {
-        permissionManager.checkPermissions(singleton(permission), new PermissionManager.PermissionRequestListener() {
-            @Override
-            public void onPermissionGranted() {
-                System.out.println(1);
-                hasPermission = true;
-                Toast.makeText(context, "Permissions Granted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPermissionDenied(DeniedPermissions deniedPermissions) {
-                System.out.println(2);
-                hasPermission = false;
-                String deniedPermissionsText = "Denied: " + Arrays.toString(deniedPermissions.toArray());
-                Toast.makeText(context, deniedPermissionsText, Toast.LENGTH_SHORT).show();
-
-                for (DeniedPermission deniedPermission : deniedPermissions) {
-                    if (deniedPermission.shouldShowRationale()) {
-                        // Display a rationale about why this permission is required
-                    }
-                }
-            }
-        });
-        System.out.println(3);
-        System.out.println(hasPermission);
-        return hasPermission;
+    private boolean hasPermission(final String permission) {
+       return customPermissionsManager.checkAndRequestPermission(permission);
     }
 
     private boolean hasPermissions(String[] permissions) {
@@ -85,8 +61,6 @@ public class Permissions {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        System.out.println("this is permission");
-        System.out.println(hasPermissions(permissions));
         return hasPermissions(permissions);
     }
 }
