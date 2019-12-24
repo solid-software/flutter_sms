@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.Build;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.flutter.plugin.common.PluginRegistry;
 
 
@@ -40,6 +43,7 @@ public class Permissions {
     }
 
     public void checkAndRequestPermission(String[] permissions, int id, PermissionHandler pemissionHandler) {
+        final List<String> list = Arrays.asList(permissions);
         hasPermissions(permissions,pemissionHandler);
     }
 }
