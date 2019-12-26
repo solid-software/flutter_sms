@@ -24,7 +24,6 @@ public class CustomPermissionsManager {
 
     void checkAndRequestPermission(final List<String> permissions,final PermissionHandler permissionHandler){
         if(requestedPermissions.containsAll(permissions)){
-            System.out.println("Wait for accepting");
             return;
         }
         requestedPermissions.addAll(permissions);
